@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template.html}">
+<head>
+    <h2>Kafka Streams Topology Visualizer</h2>
+    <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet">
+	<link th:href="@{/css/main.css}" rel="stylesheet" />
+	<script type="text/javascript" th:src="@{/js/viz-lite.js}"></script>
+	<script type="text/javascript" th:src="@{/js/rough.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/main.js}"></script>
+</head>
+<body>
+<container>
+    <div>
+        <h4>Input Kafka Topology
+            <button onclick="update()">update</button>
+        </h4>
+        <textarea id="input" onkeydown="scheduleUpdate()" onpaste="scheduleUpdate()">
+			Topology
+			Sub-topologies:
+			Sub-topology: 0
+				Source:  KSTREAM-SOURCE-0000000000 (topics: [conversation-meta])
+				--> KSTREAM-TRANSFORM-0000000001
+				Processor: KSTREAM-TRANSFORM-0000000001 (stores: [conversation-meta-state])
+				--> KSTREAM-KEY-SELECT-0000000002
+				<-- KSTREAM-SOURCE-0000000000
+				Processor: KSTREAM-KEY-SELECT-0000000002 (stores: [])
+				--> KSTREAM-FILTER-0000000005
+				<-- KSTREAM-TRANSFORM-0000000001
+				Processor: KSTREAM-FILTER-0000000005 (stores: [])
+				--> KSTREAM-SINK-0000000004
+				<-- KSTREAM-KEY-SELECT-0000000002
+				Sink: KSTREAM-SINK-0000000004 (topic: count-resolved-repartition)
+				<-- KSTREAM-FILTER-0000000005
+			Sub-topology: 1
+				Source: KSTREAM-SOURCE-0000000006 (topics: [count-resolved-repartition])
+				--> KSTREAM-AGGREGATE-0000000003
+				Processor: KSTREAM-AGGREGATE-0000000003 (stores: [count-resolved])
+				--> KTABLE-TOSTREAM-0000000007
+				<-- KSTREAM-SOURCE-0000000006
+				Processor: KTABLE-TOSTREAM-0000000007 (stores: [])
+				--> KSTREAM-SINK-0000000008
+				<-- KSTREAM-AGGREGATE-0000000003
+				Sink: KSTREAM-SINK-0000000008 (topic: streams-count-resolved)
+				<-- KTABLE-TOSTREAM-0000000007
+		</textarea>
+    </div>
+
+    <div>
+        <h4>Output Sketch Diagram</h4>
+        <canvas id="canvas"></canvas>
+    </div>
+</container>
+
+<textarea id="graphviz_code"></textarea>
+<div id="svg_container"></div>
+
+<div id="results"></div>
+
+</body>
+</html>
